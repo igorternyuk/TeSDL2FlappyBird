@@ -5,16 +5,16 @@ namespace iat_fb {
     {
     public:
         explicit Bird(float x, float y, float w, float h, float velY_);
-        inline float x() const noexcept { return posX_; }
-        inline float y() const noexcept { return posY_; }
-        inline float angle() const noexcept { return angle_; }
-        inline float width() const noexcept { return width_; }
-        inline float height() const noexcept { return height_; }
-        inline float left() const noexcept { return posX_; }
-        inline float right() const noexcept { return posX_ + width_; }
-        inline float top() const noexcept { return posY_; }
-        inline float bottom() const noexcept { return posY_ + height_; }
-        inline float vy() const noexcept { return velY_; }
+        inline auto x() const noexcept { return posX_; }
+        inline auto y() const noexcept { return posY_; }
+        inline auto angle() const noexcept { return angle_; }
+        inline auto width() const noexcept { return width_; }
+        inline auto height() const noexcept { return height_; }
+        inline auto left() const noexcept { return posX_; }
+        inline auto right() const noexcept { return posX_ + width_; }
+        inline auto top() const noexcept { return posY_; }
+        inline auto bottom() const noexcept { return posY_ + height_; }
+        inline auto vy() const noexcept { return velY_; }
         void fallDown();
         void pitchUp();
         void dive();

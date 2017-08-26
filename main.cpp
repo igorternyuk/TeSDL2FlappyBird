@@ -1,6 +1,8 @@
-#include <memory>
 #include "model.h"
+
 #include "view.h"
+
+#include <memory>
 
 using namespace iat_fb;
 

@@ -1,9 +1,11 @@
 #include "bird.h"
-#include <math.h>
+
+#include "flappy_bird_constants.h"
+
+#include <cmath>
 #ifdef DEBUG
 #include <iostream>
 #endif
-#include "flappy_bird_constants.h"
 
 iat_fb::Bird::Bird(float x, float y, float w, float h, float vy):
     posX_{x}, posY_{y}, angle_{0.f}, width_{w}, height_{h}, velY_{vy}

@@ -1,10 +1,12 @@
-#include <algorithm>
-#include <time.h>
 #include "model.h"
+
 #include "flappy_bird_constants.h"
+
 #ifdef DEBUG
 #include <iostream>
 #endif
+#include <algorithm>
+#include <ctime>
 
 iat_fb::Model::Model():
     bird_{std::make_unique<Bird>(BIRD_X, BIRD_Y, BIRD_WIDTH, BIRD_HEIGHT, BIRD_VELOCITY)}

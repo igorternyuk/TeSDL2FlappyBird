@@ -1,6 +1,7 @@
-#ifndef FLAPPY_BIRD_CONSTANTS_H
-#define FLAPPY_BIRD_CONSTANTS_H
+#pragma once
+
 #include <string>
+
 namespace iat_fb {
     static const std::string WINDOW_TITLE {"TeSDL2FlappyBird"};
     enum
@@ -21,4 +22,3 @@ namespace iat_fb {
     static const int WINDOW_X = (1366 - WINDOW_WIDTH) / 2;
     static const int WINDOW_Y = (768 - WINDOW_HEIGHT) / 2;
 }
-#endif // FLAPPY_BIRD_CONSTANTS_H

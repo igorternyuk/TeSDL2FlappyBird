@@ -1,4 +1,5 @@
 #include "resourcemanager.h"
+
 #include <iostream>
 #include <algorithm>
 #ifdef DEBUG

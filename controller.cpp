@@ -1,5 +1,7 @@
 #include "controller.h"
+
 #include "model.h"
+
 #ifdef DEBUG
 #include <iostream>
 #endif

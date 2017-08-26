@@ -1,14 +1,16 @@
-#include <algorithm>
-#include <stdexcept>
-#include <string.h>
 #include "view.h"
+
 #include "model.h"
 #include "controller.h"
 #include "bird.h"
 #include "tube.h"
+
 #ifdef DEBUG
 #include <iostream>
 #endif
+#include <algorithm>
+#include <stdexcept>
+#include <cstring>
 
 iat_fb::View::View(std::shared_ptr<Model> model):
     spModel_{model}, upController_{std::make_unique<Controller>(model)}

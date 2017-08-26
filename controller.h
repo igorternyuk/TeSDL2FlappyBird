@@ -1,7 +1,8 @@
 #pragma once
-#include <memory>
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_thread.h>
+#include <memory>
 
 namespace iat_fb {
     class Model;
