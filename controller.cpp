@@ -15,7 +15,7 @@ iat_fb::Controller::Controller(std::shared_ptr<Model> model):
 
 iat_fb::Controller::~Controller()
 {
-    SDL_WaitThread(pThreadModelStateUpdater_, NULL);
+    //SDL_WaitThread(pThreadModelStateUpdater_, NULL);
 }
 
 void iat_fb::Controller::startNewGame()
@@ -36,6 +36,12 @@ void iat_fb::Controller::birdUp()
 void iat_fb::Controller::birdDown()
 {
     spModel_->diveBird();
+}
+
+void iat_fb::Controller::stopProgram()
+{
+    isGameRunning_ = false;
+    SDL_WaitThread(pThreadModelStateUpdater_, NULL);
 }
 
 int iat_fb::Controller::theadFuncWrapper(void *data)

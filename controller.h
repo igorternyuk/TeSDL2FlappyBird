@@ -15,7 +15,7 @@ namespace iat_fb {
         void togglePause();
         void birdUp();
         void birdDown();
-        inline void stopProgram() { isGameRunning_ = false;}
+        void stopProgram();
     private:
         enum { DELAY = 70};
         bool isGameRunning_{true};
