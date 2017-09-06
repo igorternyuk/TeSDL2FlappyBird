@@ -39,6 +39,8 @@ namespace iat_fb {
     class ResourceManager
     {
     public:
+        explicit ResourceManager();
+        ~ResourceManager();
         static ResourceManager& getInstance();
         ResourceManager(const ResourceManager&) = delete;
         ResourceManager(ResourceManager&&) = delete;
@@ -59,7 +61,7 @@ namespace iat_fb {
         inline auto gameOverSound() const noexcept { return upGameOverSound_.get(); }
 
     private:
-        explicit ResourceManager();
+
         SDLInitObject initializatorOfSDL2_;
         enum {
             NUM_DIGIT_TEXTURES = 10,

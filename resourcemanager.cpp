@@ -12,22 +12,6 @@ iat_fb::ResourceManager& iat_fb::ResourceManager::getInstance()
     return instance;
 }
 
-/*        enum {
-            NUM_DIGIT_TEXTURES = 10,
-            BIG_FONT_SIZE = 100,
-            SMALL_FONT_SIZE = 32,
-            BIRD_SPRITE = 0,
-            TUBE_IMAGE = 1,
-            FONT_PATH = 2,
-            MUSIC_BACKGROUND = 3,
-            SOUND_COLLECT_POINT = 4,
-            SOUND_GAME_OVER = 5,
-            ERROR_IMAGE_LOADING = 0,
-            ERROR_SDL_INIT = 1,
-            ERROR_TTF_LOADING = 2,
-            ERROR_AUDIO_LOADING = 3
-        };*/
-
 iat_fb::ResourceManager::ResourceManager():
     upWindow_{ SDL_CreateWindow(WINDOW_TITLE.c_str(), WINDOW_X, WINDOW_Y, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN),
              [](SDL_Window *window){ SDL_DestroyWindow(window); }
@@ -69,6 +53,11 @@ iat_fb::ResourceManager::ResourceManager():
     fillVectorOfDigits();
 }
 
+    iat_fb::ResourceManager::~ResourceManager()
+    {
+        vupDigitTextures_.clear();
+    }
+
 void iat_fb::ResourceManager::fillVectorOfDigits()
 {
     for(auto i = 0; i < NUM_DIGIT_TEXTURES; ++i)
@@ -100,7 +89,7 @@ SDL_Texture* iat_fb::ResourceManager::getTextureFromText(const char *text, TTF_F
 
 iat_fb::SDLInitObject::SDLInitObject()
 {
-    if(SDL_Init((SDL_INIT_EVERYTHING)) < 0)
+    if(SDL_Init((SDL_INIT_VIDEO)) < 0)
         throw std::runtime_error(vErrors_[ERROR_SDL_INIT] + std::string(SDL_GetError()));
     if(TTF_Init() < 0)
         throw std::runtime_error(vErrors_[ERROR_TTF_LOADING] + std::string(TTF_GetError()));
@@ -111,6 +100,7 @@ iat_fb::SDLInitObject::SDLInitObject()
 
 iat_fb::SDLInitObject::~SDLInitObject()
 {
+    Mix_CloseAudio();
     Mix_Quit();
     TTF_Quit();
     SDL_Quit();

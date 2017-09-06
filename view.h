@@ -37,6 +37,7 @@ namespace iat_fb {
         };
         bool isRunning_{true};
         mutable bool draw_{true};
+        //ResourceManager resourceManager_;
         const ResourceManager &resourceManager_{ResourceManager::getInstance()};
         std::shared_ptr<Model> spModel_;
         std::unique_ptr<Controller> upController_;
