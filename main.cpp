@@ -4,7 +4,7 @@
 
 #include <memory>
 
-using namespace iat_fb;
+using namespace flappyBird;
 
 int main()
 {

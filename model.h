@@ -9,7 +9,7 @@
 #include <list>
 #include <memory>
 
-namespace iat_fb {
+namespace flappyBird {
     class Model
     {
     public:

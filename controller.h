@@ -4,7 +4,7 @@
 #include <SDL2/SDL_thread.h>
 #include <memory>
 
-namespace iat_fb {
+namespace flappyBird {
     class Model;
     class Controller
     {

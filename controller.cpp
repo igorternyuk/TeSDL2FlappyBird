@@ -7,50 +7,50 @@
 #endif
 
 
-iat_fb::Controller::Controller(std::shared_ptr<Model> model):
+flappyBird::Controller::Controller(std::shared_ptr<Model> model):
     spModel_{model}
 {
     pThreadModelStateUpdater_ = SDL_CreateThread(theadFuncWrapper, "ModelUpdater", this);
 }
 
-iat_fb::Controller::~Controller()
+flappyBird::Controller::~Controller()
 {
     //SDL_WaitThread(pThreadModelStateUpdater_, NULL);
 }
 
-void iat_fb::Controller::startNewGame()
+void flappyBird::Controller::startNewGame()
 {
     spModel_->startNewGame();
 }
 
-void iat_fb::Controller::togglePause()
+void flappyBird::Controller::togglePause()
 {
     spModel_->togglePause();
 }
 
-void iat_fb::Controller::birdUp()
+void flappyBird::Controller::birdUp()
 {
     spModel_->pitchUpBird();
 }
 
-void iat_fb::Controller::birdDown()
+void flappyBird::Controller::birdDown()
 {
     spModel_->diveBird();
 }
 
-void iat_fb::Controller::stopProgram()
+void flappyBird::Controller::stopProgram()
 {
     isGameRunning_ = false;
     SDL_WaitThread(pThreadModelStateUpdater_, NULL);
 }
 
-int iat_fb::Controller::theadFuncWrapper(void *data)
+int flappyBird::Controller::theadFuncWrapper(void *data)
 {
     Controller *self = static_cast<Controller*>(data);
     return self->threadFunc();
 }
 
-int iat_fb::Controller::threadFunc()
+int flappyBird::Controller::threadFunc()
 {
     while(isGameRunning_)
     {

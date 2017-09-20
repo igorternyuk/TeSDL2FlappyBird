@@ -12,21 +12,24 @@
 #include <stdexcept>
 #include <cstring>
 
-iat_fb::View::View(std::shared_ptr<Model> model):
+flappyBird::View::View(std::shared_ptr<Model> model):
     spModel_{model}, upController_{std::make_unique<Controller>(model)}
 {
     pBirdAnimThread_ = SDL_CreateThread(birdAnimaThreadFuncWrapper, NULL, this);
+    loadFonts();
+    loadTextures();
+    loadSoundsAndMusic();
 }
 
-iat_fb::View::~View()
+flappyBird::View::~View()
 {
     SDL_WaitThread(pBirdAnimThread_, NULL);
 }
 
 
-void iat_fb::View::run()
+void flappyBird::View::run()
 {
-    Mix_PlayMusic(resourceManager_.backgroundMusic(), -1);
+    Mix_PlayMusic(resourceManager_.getMusic("bgm"), -1);
     ///////////////MAIN LOOP OF THE GAME///////////////////
     while(isRunning_)
     {
@@ -42,30 +45,30 @@ void iat_fb::View::run()
     }
 }
 
-void iat_fb::View::updateView()
+void flappyBird::View::updateView()
 {
     draw_ = true;
 }
 
-void iat_fb::View::collectedPoint()
+void flappyBird::View::collectedPoint()
 {
     if(soundEnabled_)
-        Mix_PlayChannel(0, resourceManager_.collectPointSound(), 0);
+        Mix_PlayChannel(0, resourceManager_.getSound("point"), 0);
 }
 
-void iat_fb::View::gameOver()
+void flappyBird::View::gameOver()
 {
     if(soundEnabled_)
-        Mix_PlayChannel(0, resourceManager_.gameOverSound(), 0);
+        Mix_PlayChannel(0, resourceManager_.getSound("birdDeath"), 0);
 }
 
-int iat_fb::View::birdAnimaThreadFuncWrapper(void *data)
+int flappyBird::View::birdAnimaThreadFuncWrapper(void *data)
 {
     View *self = static_cast<View*>(data);
     return self->birdAnimThreadFunc();
 }
 
-int iat_fb::View::birdAnimThreadFunc()
+int flappyBird::View::birdAnimThreadFunc()
 {
     while(isRunning_)
     {
@@ -84,7 +87,39 @@ int iat_fb::View::birdAnimThreadFunc()
     return 0;
 }
 
-void iat_fb::View::inputPhase()
+void flappyBird::View::loadTextures()
+{
+    resourceManager_.loadTextureFromFile("bird",
+                                         "Resources/Images/birdSprite4.png");
+    resourceManager_.loadTextureFromFile("tube", "Resources/Images/tubo.png");
+
+    resourceManager_.loadTextureFromText("score", "Score:", resourceManager_.
+                                         getFont("orbitronSmall"),
+                                         {0, 0, 255, 255});
+    resourceManager_.loadTextureFromText("gameOver", "GAME OVER!",
+                                         resourceManager_.getFont("orbitronBig"),
+                                         {255, 0, 0, 255});
+    resourceManager_.loadTextureFromText("gamePaused", "GAME PAUSED",
+                                         resourceManager_.getFont("orbitronBig"),
+                                         {0, 127, 0, 255});
+}
+
+void flappyBird::View::loadFonts()
+{
+    static const std::string pathToFont{"Resources/Fonts/orbitron-light.ttf"};
+    static const int bigFontSize{100}, smallFontSize{32};
+    resourceManager_.loadFont("orbitronBig", pathToFont, bigFontSize);
+    resourceManager_.loadFont("orbitronSmall", pathToFont, smallFontSize);
+}
+
+void flappyBird::View::loadSoundsAndMusic()
+{
+    resourceManager_.loadSound("point", "Resources/Sounds/collect_point.wav");
+    resourceManager_.loadSound("birdDeath", "Resources/Sounds/bird_death.wav");
+    resourceManager_.loadMusic("bgm", "Resources/Sounds/background.mp3");
+}
+
+void flappyBird::View::inputPhase()
 {
     SDL_Event event;
     while(SDL_PollEvent(&event))
@@ -147,7 +182,7 @@ void iat_fb::View::inputPhase()
     }
 }
 
-void iat_fb::View::drawPhase() const
+void flappyBird::View::drawPhase() const
 {
     //drawing stuff
     if(draw_)
@@ -163,33 +198,37 @@ void iat_fb::View::drawPhase() const
     }
 }
 
-void iat_fb::View::drawBird() const
+void flappyBird::View::drawBird() const
 {
-    SDL_Rect birdPos{spModel_->getBirdPosX(), spModel_->getBirdPosY(), BIRD_WIDTH, BIRD_HEIGHT};
+    SDL_Rect birdPos{spModel_->getBirdPosX(), spModel_->getBirdPosY(),
+                BIRD_WIDTH, BIRD_HEIGHT};
     SDL_Rect birdRect{birdFrameX_ * BIRD_WIDTH, 0, BIRD_WIDTH, BIRD_HEIGHT};
-    SDL_RenderCopyEx(resourceManager_.renderer(), resourceManager_.birdTexture(), &birdRect, &birdPos,
+    SDL_RenderCopyEx(resourceManager_.renderer(),
+                     resourceManager_.getTexture("bird"), &birdRect, &birdPos,
                      spModel_->getBirdAngle(), nullptr, SDL_FLIP_NONE);
 }
 
-void iat_fb::View::drawTubes() const
+void flappyBird::View::drawTubes() const
 {
     for(const auto &t: spModel_->getTubes()) {
         if(t->isUp())
         {
             SDL_Rect rct{t->x(), t->y(), TUBE_WIDTH, TUBE_TEXTURE_HEIGHT};
-            SDL_RenderCopyEx(resourceManager_.renderer(), resourceManager_.tubeTexture(), nullptr,
+            SDL_RenderCopyEx(resourceManager_.renderer(),
+                             resourceManager_.getTexture("tube"), nullptr,
                              &rct, 0.f, nullptr, SDL_FLIP_VERTICAL);
         }
         else
         {
             SDL_Rect rct{t->x(), t->y(), TUBE_WIDTH, TUBE_TEXTURE_HEIGHT};
-            SDL_RenderCopyEx(resourceManager_.renderer(), resourceManager_.tubeTexture(), nullptr,
+            SDL_RenderCopyEx(resourceManager_.renderer(),
+                             resourceManager_.getTexture("tube"), nullptr,
                              &rct, 0.f, nullptr, SDL_FLIP_NONE);
         }
     }
 }
 
-void iat_fb::View::drawGameStatus() const
+void flappyBird::View::drawGameStatus() const
 {
     if(spModel_->getGameState() != Model::GameState::PLAY)
     {
@@ -197,9 +236,9 @@ void iat_fb::View::drawGameStatus() const
         SDL_Rect rct;
         SDL_Texture *texture;
         if(spModel_->getGameState() == Model::GameState::GAME_OVER)
-            texture = resourceManager_.gameOverTexture();
+            texture = resourceManager_.getTexture("gameOver");
         else
-            texture = resourceManager_.gamePausedTexture();
+            texture = resourceManager_.getTexture("gamePaused");
         SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
         rct.x = (WINDOW_WIDTH - w) / 2;
         rct.y = (WINDOW_HEIGHT - h) / 2;
@@ -209,27 +248,34 @@ void iat_fb::View::drawGameStatus() const
     }
 }
 
-void iat_fb::View::drawScore() const
+void flappyBird::View::drawScore() const
 {
     int w, h;
-    SDL_QueryTexture(resourceManager_.gameScoreTexture(), nullptr, nullptr, &w, &h);
+    SDL_QueryTexture(resourceManager_.getTexture("score"), nullptr, nullptr,
+                     &w, &h);
     SDL_Rect scoreWordPos{GAME_SCORE_POSITION_X, GAME_SCORE_POSITION_Y, w, h};
-    SDL_RenderCopy(resourceManager_.renderer(), resourceManager_.gameScoreTexture(), nullptr, &scoreWordPos);
+    SDL_RenderCopy(resourceManager_.renderer(),
+                   resourceManager_.getTexture("score"), nullptr,
+                   &scoreWordPos);
     int posX{w + GAME_SCORE_POSITION_X};
     std::string score{std::to_string(spModel_->getGameScore())};
-    SDL_SetWindowTitle(resourceManager_.window(), (WINDOW_TITLE + std::string(":") + score).c_str());
+    SDL_SetWindowTitle(resourceManager_.window(), (WINDOW_TITLE +
+                                                   std::string(":") +
+                                                   score).c_str());
     for(unsigned short int i {0}; i < score.size(); ++i)
     {
-        SDL_Texture *texture = resourceManager_.digitTexture(std::atoi(score.substr(i, 1).c_str()));
+        SDL_Texture *texture = resourceManager_.digitTexture(
+                    std::atoi(score.substr(i, 1).c_str()));
         SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
         SDL_Rect rct{posX, GAME_SCORE_POSITION_Y, w, h};
-        SDL_RenderCopy(resourceManager_.renderer(), texture, nullptr, &rct);
+        SDL_RenderCopy(resourceManager_.renderer(), texture,
+                       nullptr, &rct);
         posX += w + MARGIN_BETWEEN_LETTERS;
     }
 
 }
 
-void iat_fb::View::toggleGameSounds()
+void flappyBird::View::toggleGameSounds()
 {
     if(soundEnabled_)
     {

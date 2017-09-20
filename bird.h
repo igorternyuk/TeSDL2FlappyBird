@@ -1,6 +1,6 @@
 #pragma once
 
-namespace iat_fb {
+namespace flappyBird {
     class Bird
     {
     public:

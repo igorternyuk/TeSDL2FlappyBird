@@ -8,19 +8,19 @@
 #include <algorithm>
 #include <ctime>
 
-iat_fb::Model::Model():
+flappyBird::Model::Model():
     bird_{std::make_unique<Bird>(BIRD_X, BIRD_Y, BIRD_WIDTH, BIRD_HEIGHT, BIRD_VELOCITY)}
 {
     srand(time(0));
     createTubes();
 }
 
-iat_fb::Model::~Model()
+flappyBird::Model::~Model()
 {
     tubes_.clear();
 }
 
-void iat_fb::Model::startNewGame()
+void flappyBird::Model::startNewGame()
 {
     score_ = 0;
     bird_->reset();
@@ -29,7 +29,7 @@ void iat_fb::Model::startNewGame()
     gameState_ = GameState::PLAY;
 }
 
-void iat_fb::Model::togglePause()
+void flappyBird::Model::togglePause()
 {
     if(gameState_ == GameState::PLAY)
         gameState_ = GameState::PAUSE;
@@ -37,7 +37,7 @@ void iat_fb::Model::togglePause()
             gameState_ = GameState::PLAY;
 }
 
-void iat_fb::Model::pitchUpBird()
+void flappyBird::Model::pitchUpBird()
 {
     if(gameState_ == GameState::PLAY)
     {
@@ -46,7 +46,7 @@ void iat_fb::Model::pitchUpBird()
     }
 }
 
-void iat_fb::Model::diveBird()
+void flappyBird::Model::diveBird()
 {
     if(gameState_ == GameState::PLAY)
     {
@@ -55,7 +55,7 @@ void iat_fb::Model::diveBird()
     }
 }
 
-void iat_fb::Model::step()
+void flappyBird::Model::step()
 {
     if(bird_->bottom() < WINDOW_HEIGHT)
         bird_->fallDown();
@@ -72,7 +72,7 @@ void iat_fb::Model::step()
     notifyAllListeners();
 }
 
-void iat_fb::Model::handleBirdTubeCollisions()
+void flappyBird::Model::handleBirdTubeCollisions()
 {
     static bool isScoreIncremented {false};
     for(unsigned short int i{0}; i < tubes_.size() / 2; i += 2)
@@ -105,7 +105,7 @@ void iat_fb::Model::handleBirdTubeCollisions()
     }
 }
 
-void iat_fb::Model::createTubes()
+void flappyBird::Model::createTubes()
 {
     for(int i = 0; i < INIT_TUBE_PAIR_NUMBER; ++i)
     {
@@ -117,7 +117,7 @@ void iat_fb::Model::createTubes()
     }
 }
 
-void iat_fb::Model::addNewTubePair()
+void flappyBird::Model::addNewTubePair()
 {
     float lastTubeX {tubes_.at(tubes_.size() - 1)->x()};
     int randY{rand() % TUBE_MAX_HEIGHT};
@@ -127,25 +127,25 @@ void iat_fb::Model::addNewTubePair()
                                                randY + SPACE_BETWEEN_TUBES_Y, false));
 }
 
-void iat_fb::Model::removeTubesOutsideOfTheField()
+void flappyBird::Model::removeTubesOutsideOfTheField()
 {
     tubes_.erase(std::remove_if(tubes_.begin(), tubes_.end(),
                                 [&](const auto &tube) { return tube->isOutOfField(); }), tubes_.end());
 }
 
-void iat_fb::Model::addListener(std::shared_ptr<ModelListener> spListener)
+void flappyBird::Model::addListener(std::shared_ptr<ModelListener> spListener)
 {
     listeners_.push_back(spListener);
 }
 
-void iat_fb::Model::removeListener(std::shared_ptr<ModelListener> wpListener)
+void flappyBird::Model::removeListener(std::shared_ptr<ModelListener> wpListener)
 {
     listeners_.remove_if([wpListener](std::weak_ptr<ModelListener> p){
         return !(p.owner_before(wpListener) || wpListener.owner_before(p));
     });
 }
 
-void iat_fb::Model::notifyAllListeners(SignalType st)
+void flappyBird::Model::notifyAllListeners(SignalType st)
 {
     for(auto l: listeners_)
     {

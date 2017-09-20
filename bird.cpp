@@ -7,13 +7,13 @@
 #include <iostream>
 #endif
 
-iat_fb::Bird::Bird(float x, float y, float w, float h, float vy):
+flappyBird::Bird::Bird(float x, float y, float w, float h, float vy):
     posX_{x}, posY_{y}, angle_{0.f}, width_{w}, height_{h}, velY_{vy}
 {}
 
-const iat_fb::Bird::PhysicsConstants iat_fb::Bird::ph_;
+const flappyBird::Bird::PhysicsConstants flappyBird::Bird::ph_;
 
-void iat_fb::Bird::fallDown()
+void flappyBird::Bird::fallDown()
 {
     velY_ += ph_.GRAVITY;
     angle_ = angle_ < ph_.ANGLE_MAX ? angle_ + ph_.FALLLING_DELTA_ANGLE : angle_;
@@ -21,7 +21,7 @@ void iat_fb::Bird::fallDown()
     checkFieldLimits();
 }
 
-void iat_fb::Bird::pitchUp()
+void flappyBird::Bird::pitchUp()
 {
     velY_ += ph_.PITCH_UP_ACCELERATION;
     angle_ = angle_ > ph_.ANGLE_MIN ? angle_ + ph_.PITCH_UP_DELTA_ANGLE : angle_;
@@ -29,7 +29,7 @@ void iat_fb::Bird::pitchUp()
     checkFieldLimits();
 }
 
-void iat_fb::Bird::dive()
+void flappyBird::Bird::dive()
 {
     velY_ += ph_.DIVE_ACCELERATION;
     angle_ = angle_ < ph_.ANGLE_MAX ? angle_ + ph_.DIVE_DELTA_ANGLE : angle_;
@@ -37,7 +37,7 @@ void iat_fb::Bird::dive()
     checkFieldLimits();
 }
 
-void iat_fb::Bird::reset()
+void flappyBird::Bird::reset()
 {
     posX_ = BIRD_X;
     posY_ = BIRD_Y;
@@ -45,7 +45,7 @@ void iat_fb::Bird::reset()
     velY_ = BIRD_VELOCITY;
 }
 
-void iat_fb::Bird::checkFieldLimits()
+void flappyBird::Bird::checkFieldLimits()
 {
     if(posY_ < 0)
         posY_ = 0.f;

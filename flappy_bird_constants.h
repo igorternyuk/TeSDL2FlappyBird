@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace iat_fb {
+namespace flappyBird {
     static const std::string WINDOW_TITLE {"TeSDL2FlappyBird"};
     enum
     {

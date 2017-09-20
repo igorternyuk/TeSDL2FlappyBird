@@ -14,7 +14,7 @@
 //1) - движение труб и падение птички
 //2) - анимация птички - птичка машет крыльями
 
-namespace iat_fb {
+namespace flappyBird {
     class Model;
     class Controller;
     class View: public ModelListener
@@ -38,7 +38,7 @@ namespace iat_fb {
         bool isRunning_{true};
         mutable bool draw_{true};
         //ResourceManager resourceManager_;
-        const ResourceManager &resourceManager_{ResourceManager::getInstance()};
+        ResourceManager &resourceManager_{ResourceManager::getInstance()};
         std::shared_ptr<Model> spModel_;
         std::unique_ptr<Controller> upController_;
         SDL_Thread *pBirdAnimThread_;
@@ -46,6 +46,9 @@ namespace iat_fb {
         bool soundEnabled_{true};
         static int birdAnimaThreadFuncWrapper(void *data);
         int birdAnimThreadFunc();
+        void loadTextures();
+        void loadFonts();
+        void loadSoundsAndMusic();
         void inputPhase();
         void drawPhase() const;
         void drawBird() const;

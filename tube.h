@@ -1,7 +1,7 @@
 #pragma once
 #include "flappy_bird_constants.h"
 
-namespace iat_fb {
+namespace flappyBird {
     class Tube
     {
     public:
