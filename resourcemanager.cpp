@@ -13,6 +13,10 @@ void flappyBird::ResourceManager::loadTextureFromFile(const std::string &key,
 {
    my_unique_ptr<SDL_Texture> mupTexture{getTextureFromFile(path.c_str()),
                                          SDL_DestroyTexture };
+   if(!mupTexture.get()){
+       throw std::runtime_error("Texture loading error: " +
+                                std::string(path) + " - " + SDL_GetError());
+   }
    textures_.insert(std::make_pair(key, std::move(mupTexture)));
 }
 
@@ -33,6 +37,11 @@ void flappyBird::ResourceManager::loadFont(const std::string &key,
 {
     my_unique_ptr<TTF_Font> mupFont{ TTF_OpenFont(path.c_str(), size),
                                     TTF_CloseFont };
+    if(!mupFont.get())
+    {
+        throw std::runtime_error("Font loading error: " +
+                                 std::string(path) + " - " + SDL_GetError());
+    }
     auto inserted = fonts_.insert(std::make_pair(key, std::move(mupFont)));
     assert(inserted.second);
 }
@@ -42,6 +51,10 @@ void flappyBird::ResourceManager::loadSound(const std::string &key,
 {
     my_unique_ptr<Mix_Chunk> mupSound{ Mix_LoadWAV(path.c_str()),
                                       Mix_FreeChunk };
+    if(!mupSound.get()){
+        throw std::runtime_error("Sound loading error: " +
+                                 std::string(path) + " - " + SDL_GetError());
+    }
     auto inserted = sounds_.insert(std::make_pair(key, std::move(mupSound)));
     assert(inserted.second);
 }
@@ -51,6 +64,10 @@ void flappyBird::ResourceManager::loadMusic(const std::string &key,
 {
     my_unique_ptr<Mix_Music> mupMusic{Mix_LoadMUS(path.c_str()),
                                      Mix_FreeMusic};
+    if(!mupMusic.get()){
+        throw std::runtime_error("Music loading error: " +
+                                 std::string(path) + " - " + SDL_GetError());
+    }
     auto inserted = tracks_.insert(std::make_pair(key, std::move(mupMusic)));
     assert(inserted.second);
 }
