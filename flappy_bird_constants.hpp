@@ -2,7 +2,8 @@
 
 #include <string>
 
-namespace flappyBird {
+namespace flappyBird
+{
     static const std::string WINDOW_TITLE {"TeSDL2FlappyBird"};
     enum
     {
@@ -16,9 +17,8 @@ namespace flappyBird {
         TUBE_MAX_HEIGHT = 300,
         SPACE_BETWEEN_TUBES_Y = 200,
         SPACE_BETWEEN_TUBES_X = 400,
+        BIRD_X = WINDOW_WIDTH / 4,
+        BIRD_Y = (WINDOW_HEIGHT - BIRD_WIDTH) / 2
     };
-    static const int BIRD_X = WINDOW_WIDTH / 4;
-    static const int BIRD_Y = (WINDOW_HEIGHT - BIRD_WIDTH) / 2;
-    static const int WINDOW_X = (1366 - WINDOW_WIDTH) / 2;
-    static const int WINDOW_Y = (768 - WINDOW_HEIGHT) / 2;
+
 }

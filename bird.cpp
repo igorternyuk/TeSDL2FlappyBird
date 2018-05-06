@@ -1,6 +1,6 @@
-#include "bird.h"
+#include "bird.hpp"
 
-#include "flappy_bird_constants.h"
+#include "flappy_bird_constants.hpp"
 
 #include <cmath>
 #ifdef DEBUG

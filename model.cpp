@@ -1,6 +1,6 @@
-#include "model.h"
+#include "model.hpp"
 
-#include "flappy_bird_constants.h"
+#include "flappy_bird_constants.hpp"
 
 #ifdef DEBUG
 #include <iostream>

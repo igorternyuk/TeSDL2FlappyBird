@@ -1,6 +1,7 @@
 #pragma once
 
-namespace flappyBird {
+namespace flappyBird
+{
     class Bird
     {
     public:

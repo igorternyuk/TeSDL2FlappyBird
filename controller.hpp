@@ -4,7 +4,8 @@
 #include <SDL2/SDL_thread.h>
 #include <memory>
 
-namespace flappyBird {
+namespace flappyBird
+{
     class Model;
     class Controller
     {

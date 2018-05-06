@@ -13,14 +13,16 @@ SOURCES += main.cpp \
     model.cpp \
     controller.cpp \
     view.cpp \
-    resourcemanager.cpp
+    resourcemanager.cpp \
+    sdl2initializer.cpp
 
 HEADERS += \
-    bird.h \
-    tube.h \
-    model.h \
-    controller.h \
-    view.h \
-    resourcemanager.h \
-    modellistener.h \
-    flappy_bird_constants.h
+    bird.hpp \
+    controller.hpp \
+    flappy_bird_constants.hpp \
+    model.hpp \
+    modellistener.hpp \
+    resourcemanager.hpp \
+    tube.hpp \
+    view.hpp \
+    sdl2initializer.hpp

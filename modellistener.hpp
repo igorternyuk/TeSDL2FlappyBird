@@ -1,7 +1,9 @@
 #pragma once
 
-namespace flappyBird {
-    class ModelListener{
+namespace flappyBird
+{
+    class ModelListener
+    {
     public:
         explicit ModelListener() {}
         virtual ~ModelListener() {}

@@ -1,15 +1,16 @@
 #pragma once
 
-#include "modellistener.h"
-#include "bird.h"
-#include "tube.h"
-#include "flappy_bird_constants.h"
+#include "modellistener.hpp"
+#include "bird.hpp"
+#include "tube.hpp"
+#include "flappy_bird_constants.hpp"
 
 #include <vector>
 #include <list>
 #include <memory>
 
-namespace flappyBird {
+namespace flappyBird
+{
     class Model
     {
     public:

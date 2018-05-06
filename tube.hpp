@@ -1,7 +1,8 @@
 #pragma once
-#include "flappy_bird_constants.h"
+#include "flappy_bird_constants.hpp"
 
-namespace flappyBird {
+namespace flappyBird
+{
     class Tube
     {
     public:

@@ -1,7 +1,5 @@
-#include "model.h"
-
-#include "view.h"
-
+#include "model.hpp"
+#include "view.hpp"
 #include <memory>
 
 using namespace flappyBird;

@@ -1,20 +1,15 @@
 #pragma once
-#include <string>
-#include <memory>
+
 #include <SDL2/SDL_thread.h>
-#include "modellistener.h"
-#include "flappy_bird_constants.h"
-#include "resourcemanager.h"
+#include "sdl2initializer.hpp"
+#include "modellistener.hpp"
+#include "flappy_bird_constants.hpp"
+#include "resourcemanager.hpp"
+#include <memory>
+#include <string>
 
-/*Хочу применить класс менеджер ресурсов
- Использую прозрачный формат спрайтов и спайт-анимации
- Использую звуки и шрифты и все по паттерну MVC*/
-
-//Делаем два потока один для обновления игровой модели:
-//1) - движение труб и падение птички
-//2) - анимация птички - птичка машет крыльями
-
-namespace flappyBird {
+namespace flappyBird
+{
     class Model;
     class Controller;
     class View: public ModelListener
@@ -35,15 +30,20 @@ namespace flappyBird {
             GAME_SCORE_POSITION_Y = WINDOW_HEIGHT - 50,
             MARGIN_BETWEEN_LETTERS = 2
         };
-        bool isRunning_{true};
-        mutable bool draw_{true};
-        //ResourceManager resourceManager_;
-        ResourceManager &resourceManager_{ResourceManager::getInstance()};
+
+        SDLInitObject initializatorOfSDL2_;
+        my_unique_ptr<SDL_Window> upWindow_;             //Main SDL window
+        my_unique_ptr<SDL_Renderer> upRenderer_;         //Renderer of main window
+        ResourceManager resourceManager_;
+
         std::shared_ptr<Model> spModel_;
         std::unique_ptr<Controller> upController_;
         SDL_Thread *pBirdAnimThread_;
         int birdFrameX_{0};
         bool soundEnabled_{true};
+        bool isRunning_{true};
+        mutable bool draw_{true};
+    private:
         static int birdAnimaThreadFuncWrapper(void *data);
         int birdAnimThreadFunc();
         void loadTextures();

@@ -5,7 +5,7 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 
-#include "flappy_bird_constants.h"
+#include "flappy_bird_constants.hpp"
 
 #include <vector>
 #include <string>
@@ -14,45 +14,20 @@
 #include <memory>
 #include <stdexcept>
 
-namespace flappyBird {
+namespace flappyBird
+{
     template<typename T>
     using my_unique_ptr = std::unique_ptr<T,std::function<void(T*)>>;
-
-    class SDLInitObject
-    {
-    public:
-        explicit SDLInitObject();
-        ~SDLInitObject();
-    private:
-        enum
-        {
-            ERROR_SDL_INIT = 0,
-            ERROR_TTF_LOADING = 1,
-            ERROR_AUDIO_LOADING = 2
-        };
-        const std::vector<std::string> vErrors_
-        {
-            "Error while loading SDL: ",
-            "Error while loading TTF module: ",
-            "Error while opening audio module: "
-        };
-    };
 
     class ResourceManager
     {
     public:
-
+        explicit ResourceManager(SDL_Renderer* renderer);
         ~ResourceManager();
-        static ResourceManager& getInstance();
         ResourceManager(const ResourceManager&) = delete;
         ResourceManager(ResourceManager&&) = delete;
         ResourceManager& operator=(const ResourceManager&) = delete;
         ResourceManager& operator=(ResourceManager&&) = delete;
-
-        inline auto window() const noexcept { return upWindow_.get(); }
-        inline auto renderer() const noexcept { return upRenderer_.get(); }
-
-        ///////////////
 
         void loadTextureFromFile(const std::string& key, const std::string& path);
         void loadTextureFromText(const std::string& key, const std::string& text,
@@ -66,32 +41,26 @@ namespace flappyBird {
         void removeSound(const std::string& key);
         void removeMusic(const std::string& key);
 
-        SDL_Texture *getTexture(const std::string& key);
+        SDL_Texture *getTexture(const std::string& key) const;
         inline auto digitTexture(int i) const noexcept
         { return vupDigitTextures_.at(i).get(); }
-        TTF_Font* getFont(const std::string& key);
-        Mix_Chunk* getSound(const std::string& key);
-        Mix_Music* getMusic(const std::string& key);
+        TTF_Font* getFont(const std::string& key) const;
+        Mix_Chunk* getSound(const std::string& key) const;
+        Mix_Music* getMusic(const std::string& key) const;
+        SDL_Renderer *getRenderer() const;
+        void setRenderer(SDL_Renderer *renderer);
 
     private:
-        SDLInitObject initializatorOfSDL2_;
-        enum
-        {
-            NUM_DIGIT_TEXTURES = 10,
-        };
-
+        enum { NUM_DIGIT_TEXTURES = 10 };
         const SDL_Color colorDigits_{255, 0, 0, 255};
-        my_unique_ptr<SDL_Window> upWindow_;             //Main SDL window
-        my_unique_ptr<SDL_Renderer> upRenderer_;         //Renderer of main window
+        SDL_Renderer *renderer_;
         std::vector<my_unique_ptr<SDL_Texture>> vupDigitTextures_;
-
-        //New stuff
         std::map<std::string, my_unique_ptr<SDL_Texture>> textures_;
         std::map<std::string, my_unique_ptr<TTF_Font>> fonts_;
         std::map<std::string, my_unique_ptr<Mix_Music>> tracks_;
         std::map<std::string, my_unique_ptr<Mix_Chunk>> sounds_;
 
-        explicit ResourceManager();
+    private:
         void loadDefaultFont();
         void fillVectorOfDigits();
         SDL_Texture *getTextureFromText(const char *text, TTF_Font *font,

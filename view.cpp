@@ -1,9 +1,9 @@
-#include "view.h"
+#include "view.hpp"
 
-#include "model.h"
-#include "controller.h"
-#include "bird.h"
-#include "tube.h"
+#include "model.hpp"
+#include "controller.hpp"
+#include "bird.hpp"
+#include "tube.hpp"
 
 #ifdef DEBUG
 #include <iostream>
@@ -13,8 +13,26 @@
 #include <cstring>
 
 flappyBird::View::View(std::shared_ptr<Model> model):
-    spModel_{model}, upController_{std::make_unique<Controller>(model)}
+    upWindow_
+    {
+        SDL_CreateWindow(WINDOW_TITLE.c_str(),
+                         (initializatorOfSDL2_.screenWidth - WINDOW_WIDTH) / 2,
+                         (initializatorOfSDL2_.screenHeight - WINDOW_HEIGHT) / 2,
+                         WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN),
+                         SDL_DestroyWindow
+    },
+    upRenderer_
+    {
+        SDL_CreateRenderer(upWindow_.get(), -1,
+                           SDL_RENDERER_ACCELERATED
+                           | SDL_RENDERER_PRESENTVSYNC),
+                           SDL_DestroyRenderer
+    },
+    resourceManager_{ upRenderer_.get() },
+    spModel_{ model },
+    upController_{ std::make_unique<Controller>(model) }
 {
+    resourceManager_.setRenderer(upRenderer_.get());
     pBirdAnimThread_ = SDL_CreateThread(birdAnimaThreadFuncWrapper, NULL, this);
     loadFonts();
     loadTextures();
@@ -187,13 +205,13 @@ void flappyBird::View::drawPhase() const
     //drawing stuff
     if(draw_)
     {
-        SDL_SetRenderDrawColor(resourceManager_.renderer(), 0,255,255,255);
-        SDL_RenderClear(resourceManager_.renderer());
+        SDL_SetRenderDrawColor(upRenderer_.get(), 0,255,255,255);
+        SDL_RenderClear(upRenderer_.get());
         drawBird();
         drawTubes();
         drawGameStatus();
         drawScore();
-        SDL_RenderPresent(resourceManager_.renderer());
+        SDL_RenderPresent(upRenderer_.get());
         draw_ = false;
     }
 }
@@ -203,9 +221,9 @@ void flappyBird::View::drawBird() const
     SDL_Rect birdPos{spModel_->getBirdPosX(), spModel_->getBirdPosY(),
                 BIRD_WIDTH, BIRD_HEIGHT};
     SDL_Rect birdRect{birdFrameX_ * BIRD_WIDTH, 0, BIRD_WIDTH, BIRD_HEIGHT};
-    SDL_RenderCopyEx(resourceManager_.renderer(),
-                     resourceManager_.getTexture("bird"), &birdRect, &birdPos,
-                     spModel_->getBirdAngle(), nullptr, SDL_FLIP_NONE);
+    SDL_RenderCopyEx(upRenderer_.get(), resourceManager_.getTexture("bird"),
+                     &birdRect, &birdPos, spModel_->getBirdAngle(),
+                     nullptr, SDL_FLIP_NONE);
 }
 
 void flappyBird::View::drawTubes() const
@@ -214,14 +232,14 @@ void flappyBird::View::drawTubes() const
         if(t->isUp())
         {
             SDL_Rect rct{t->x(), t->y(), TUBE_WIDTH, TUBE_TEXTURE_HEIGHT};
-            SDL_RenderCopyEx(resourceManager_.renderer(),
+            SDL_RenderCopyEx(upRenderer_.get(),
                              resourceManager_.getTexture("tube"), nullptr,
                              &rct, 0.f, nullptr, SDL_FLIP_VERTICAL);
         }
         else
         {
             SDL_Rect rct{t->x(), t->y(), TUBE_WIDTH, TUBE_TEXTURE_HEIGHT};
-            SDL_RenderCopyEx(resourceManager_.renderer(),
+            SDL_RenderCopyEx(upRenderer_.get(),
                              resourceManager_.getTexture("tube"), nullptr,
                              &rct, 0.f, nullptr, SDL_FLIP_NONE);
         }
@@ -244,7 +262,7 @@ void flappyBird::View::drawGameStatus() const
         rct.y = (WINDOW_HEIGHT - h) / 2;
         rct.w = w;
         rct.h = h;
-        SDL_RenderCopy(resourceManager_.renderer(), texture, nullptr, &rct);
+        SDL_RenderCopy(upRenderer_.get(), texture, nullptr, &rct);
     }
 }
 
@@ -254,21 +272,20 @@ void flappyBird::View::drawScore() const
     SDL_QueryTexture(resourceManager_.getTexture("score"), nullptr, nullptr,
                      &w, &h);
     SDL_Rect scoreWordPos{GAME_SCORE_POSITION_X, GAME_SCORE_POSITION_Y, w, h};
-    SDL_RenderCopy(resourceManager_.renderer(),
+    SDL_RenderCopy(upRenderer_.get(),
                    resourceManager_.getTexture("score"), nullptr,
                    &scoreWordPos);
     int posX{w + GAME_SCORE_POSITION_X};
     std::string score{std::to_string(spModel_->getGameScore())};
-    SDL_SetWindowTitle(resourceManager_.window(), (WINDOW_TITLE +
-                                                   std::string(":") +
-                                                   score).c_str());
+    SDL_SetWindowTitle(upWindow_.get(), (WINDOW_TITLE +
+         std::string(":") + score).c_str());
     for(unsigned short int i {0}; i < score.size(); ++i)
     {
         SDL_Texture *texture = resourceManager_.digitTexture(
                     std::atoi(score.substr(i, 1).c_str()));
         SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
         SDL_Rect rct{posX, GAME_SCORE_POSITION_Y, w, h};
-        SDL_RenderCopy(resourceManager_.renderer(), texture,
+        SDL_RenderCopy(upRenderer_.get(), texture,
                        nullptr, &rct);
         posX += w + MARGIN_BETWEEN_LETTERS;
     }

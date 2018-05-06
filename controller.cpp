@@ -1,6 +1,6 @@
-#include "controller.h"
+#include "controller.hpp"
 
-#include "model.h"
+#include "model.hpp"
 
 #ifdef DEBUG
 #include <iostream>
